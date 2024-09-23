@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './Taskmanager.css';
-import { useState, useRef, useEffect } from 'react';
 import { IoMdDoneAll } from "react-icons/io";
 import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
@@ -9,13 +8,26 @@ function Taskmanager() {
   const [todo, setTodo] = useState('');
   const [todos, setTodos] = useState([]);
   const [editId, setEditID] = useState(null);
-  const [filter, setFilter] = useState('All'); // State for filtering
-
+  const [filter, setFilter] = useState('All');
   const inputRef = useRef(null);
 
+ 
   useEffect(() => {
+    const storedTodos = localStorage.getItem('todos');
+    if (storedTodos) {
+      setTodos(JSON.parse(storedTodos));
+    }
     inputRef.current.focus();
   }, []);
+
+  
+  useEffect(() => {
+    if (todos.length > 0) {
+      localStorage.setItem('todos', JSON.stringify(todos));
+    } else {
+      localStorage.removeItem('todos'); 
+    }
+  }, [todos]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -42,9 +54,11 @@ function Taskmanager() {
   };
 
   const onComplete = (id) => {
-    setTodos(todos.map((list) =>
-      list.id === id ? { ...list, status: list.status === 'Complete' ? 'In Progress' : 'Complete' } : list
-    ));
+    setTodos(
+      todos.map((to) =>
+        to.id === id ? { ...to, status: to.status === 'Complete' ? 'In Progress' : 'Complete' } : to
+      )
+    );
   };
 
   const onEdit = (id) => {
@@ -75,7 +89,6 @@ function Taskmanager() {
         <button type="submit">{editId ? 'EDIT' : 'ADD'}</button>
       </form>
 
-  
       <div className="filter-buttons">
         <button onClick={() => setFilter('All')}>All</button>
         <button onClick={() => setFilter('In Progress')}>In Progress</button>

@@ -74,7 +74,7 @@ button:hover {
 
 .list-item-list#list-item {
     text-decoration: line-through; 
-    color: #999;
+    color: red;
 }
 
 .list-item-icons {
