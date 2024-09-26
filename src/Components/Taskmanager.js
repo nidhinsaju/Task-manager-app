@@ -78,7 +78,9 @@ function Taskmanager() {
   return (
 
     <div>
-    <Link to="Api-demo"><input type="button" value="API DEMO"></input></Link>
+     <Link to="Api-demo">
+  <input type="button" value="API DEMO" className="api-demo-btn" />
+</Link>
     <div className='container'>
       <h2>Task Manager App</h2>
       <form className='form-group' onSubmit={handleSubmit}>
