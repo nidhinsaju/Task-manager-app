@@ -3,6 +3,7 @@ import './Taskmanager.css';
 import { IoMdDoneAll } from "react-icons/io";
 import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
+import {Link} from 'react-router-dom';
 
 function Taskmanager() {
   const [todo, setTodo] = useState('');
@@ -75,6 +76,9 @@ function Taskmanager() {
   });
 
   return (
+
+    <div>
+    <Link to="Api-demo"><input type="button" value="API DEMO"></input></Link>
     <div className='container'>
       <h2>Task Manager App</h2>
       <form className='form-group' onSubmit={handleSubmit}>
@@ -126,6 +130,7 @@ function Taskmanager() {
           ))}
         </ul>
       </div>
+    </div>
     </div>
   );
 }
