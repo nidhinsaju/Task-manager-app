@@ -3,7 +3,7 @@ import "./Taskmanager.css";
 import { IoMdDoneAll } from "react-icons/io";
 import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 
 function Taskmanager() {
   const [todo, setTodo] = useState("");
@@ -81,7 +81,7 @@ function Taskmanager() {
     return to.status === filter;
   });
 
- /*  const current = new Date();
+  /*  const current = new Date();
   const date = `${current.getDate()}/${
     current.getMonth() + 1
   }/${current.getFullYear()}`; */
