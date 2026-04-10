@@ -1,0 +1,75 @@
+.landing-container {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #fff;
+  padding: 40px 0;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.landing-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.landing-header h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.landing-header p {
+  font-size: 1rem;
+  color: #cbd5f5;
+  margin-top: 10px;
+}
+
+.landing-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* force 4 in one row */
+  gap: 20px;
+  width: 100%; /* full width */
+  padding: 0 40px; /* optional side spacing */
+  box-sizing: border-box;
+}
+
+.landing-card {
+  background: #1e293b;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+  transition: 0.3s ease;
+  border: 1px solid #334155;
+}
+
+.landing-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.landing-card h2 {
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+  color: #fff;
+}
+
+.landing-card p {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin-bottom: 20px;
+}
+
+.landing-card button {
+  background: #22c55e;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.landing-card button:hover {
+  background: #16a34a;
+}

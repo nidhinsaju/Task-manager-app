@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "target": "es2020",
+    "useDefineForClassFields": true,
+    "lib": ["es2020", "dom", "dom.iterable"],
+    "module": "esnext",
+    "skipLibCheck": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

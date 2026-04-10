@@ -1,0 +1,746 @@
+/* ═══════════════════════════════════════════
+   IndianCoinA4Page.css
+   Indian Coin Collection Label Generator
+   ═══════════════════════════════════════════ */
+
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;600;700&display=swap");
+
+/* ─── Root & Page ─── */
+.coin-page-wrapper {
+  min-height: 100vh;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  background: #f0f2f5;
+  font-family: "Barlow", sans-serif;
+}
+
+/* ─── Form Panel ─── */
+.coin-form-panel {
+  width: 100%;
+  max-width: 1200px;
+  background: linear-gradient(160deg, #ffffff 0%, #f7f9fc 100%);
+  border: 1px solid #d0d8e4;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.07);
+}
+
+.coin-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+  gap: 20px;
+}
+
+.coin-top-bar h2 {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #1a2a3a;
+  margin: 0 0 6px 0;
+  letter-spacing: 0.01em;
+}
+
+.coin-top-bar p {
+  margin: 0;
+  color: #556780;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.coin-stats-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff8ee;
+  border: 1px solid #f0c870;
+  padding: 12px 20px;
+  border-radius: 14px;
+  color: #7a4f00;
+  font-weight: 700;
+  white-space: nowrap;
+  font-size: 0.95rem;
+}
+
+.coin-stats-badge span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #d4a017;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+/* ─── Form Grid ─── */
+.coin-label-form {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.coin-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.coin-form-field label {
+  color: #22324b;
+  font-weight: 700;
+  font-size: 0.88rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.coin-form-field input[type="text"] {
+  border: 1.5px solid #c6d1db;
+  border-radius: 12px;
+  padding: 12px 15px;
+  font-size: 0.95rem;
+  background: #fff;
+  color: #1d2f44;
+  font-family: "Barlow", sans-serif;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.coin-form-field input[type="text"]:focus {
+  border-color: #d4a017;
+  box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.12);
+}
+
+.coin-form-field input[type="text"]::placeholder {
+  color: #9aacbc;
+}
+
+/* ─── Rarity Index Selector ─── */
+.rarity-selector {
+  grid-column: span 3;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rarity-selector label {
+  color: #22324b;
+  font-weight: 700;
+  font-size: 0.88rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.rarity-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.rarity-btn {
+  padding: 9px 22px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  background: #e2e8f0;
+  color: #4a5568;
+  border-color: #cbd5e0;
+}
+
+.rarity-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Active states by rarity */
+.rarity-btn.active-C {
+  background: #fef08a;
+  color: #713f12;
+  border-color: #eab308;
+}
+
+.rarity-btn.active-S {
+  background: #fb923c;
+  color: #fff;
+  border-color: #ea580c;
+}
+
+.rarity-btn.active-R {
+  background: #fca5a5;
+  color: #fff;
+  border-color: #f87171;
+}
+
+.rarity-btn.active-X {
+  background: #ef4444;
+  color: #fff;
+  border-color: #dc2626;
+}
+
+/* ─── Form Actions ─── */
+.coin-form-actions {
+  grid-column: span 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.coin-add-btn,
+.coin-page-btn,
+.coin-remove-page-btn,
+.coin-pdf-btn,
+.coin-cancel-btn {
+  border-radius: 12px;
+  padding: 12px 22px;
+  font-weight: 700;
+  font-family: "Barlow", sans-serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.18s ease;
+}
+
+.coin-add-btn {
+  background: #d4a017;
+  color: #fff;
+}
+.coin-add-btn:hover {
+  background: #b8860b;
+}
+
+.coin-page-btn {
+  background: #fff;
+  border: 1.5px solid #d4a017;
+  color: #d4a017;
+}
+.coin-page-btn:hover {
+  background: #fffbee;
+}
+
+.coin-remove-page-btn {
+  background: #fff;
+  border: 1.5px solid #f43f5e;
+  color: #f43f5e;
+}
+.coin-remove-page-btn:hover {
+  background: #fff1f2;
+}
+
+.coin-cancel-btn {
+  background: #fff;
+  border: 1.5px solid #94a3b8;
+  color: #64748b;
+}
+.coin-cancel-btn:hover {
+  background: #f8fafc;
+}
+
+.coin-pdf-btn {
+  background: #16a34a;
+  color: #fff;
+}
+.coin-pdf-btn:hover {
+  background: #15803d;
+}
+
+/* ─── Builder Footer ─── */
+.coin-builder-footer {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+/* ─── Coin List ─── */
+.coin-label-list {
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.coin-label-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  flex-wrap: wrap;
+}
+
+.coin-label-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 160px;
+}
+
+.coin-label-item-info .coin-item-title {
+  font-weight: 700;
+  color: #1a2a3a;
+  font-size: 0.97rem;
+}
+
+.coin-label-item-info small {
+  color: #64748b;
+  font-size: 0.83rem;
+}
+
+.coin-item-rarity-badge {
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+}
+
+.coin-item-btn {
+  border: none;
+  padding: 9px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.88rem;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+
+/* ── NEW: Duplicate button ── */
+.coin-item-duplicate-btn {
+  background: #7c3aed;
+  color: #fff;
+}
+.coin-item-duplicate-btn:hover {
+  background: #6d28d9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
+}
+
+.coin-item-edit-btn {
+  background: #3b82f6;
+  color: #fff;
+}
+.coin-item-edit-btn:hover {
+  background: #2563eb;
+}
+
+.coin-item-remove-btn {
+  background: #f43f5e;
+  color: #fff;
+}
+.coin-item-remove-btn:hover {
+  background: #dc2444;
+}
+
+/* ─── PDF Name & Actions ─── */
+.coin-pdf-name-field {
+  max-width: 340px;
+  margin-top: 18px;
+}
+
+.coin-label-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.coin-back-link {
+  background: #2563eb;
+  color: #fff;
+  text-decoration: none;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: background 0.18s;
+}
+.coin-back-link:hover {
+  background: #1d4ed8;
+}
+
+/* ═══════════════════════════════════════════
+   A4 PREVIEW PANEL
+   ═══════════════════════════════════════════ */
+
+.coin-preview-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+}
+
+.coin-a4-page {
+  width: 21cm;
+  min-height: 29.7cm;
+  background: #ffffff;
+  border: 1px solid #c8d4dd;
+  position: relative;
+  overflow: hidden;
+  padding: 5mm 6mm;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.coin-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 6px 8px;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.coin-page-inner {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 2mm;
+}
+
+/* ─── Coin Label Grid ─── */
+.coin-page-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 5cm);
+  gap: 0.25cm 0.3cm;
+  width: calc(4 * 5cm + 3 * 0.3cm);
+}
+
+/* ─── Coin slot = 2 stacked label rows ─── */
+.coin-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 3px;
+}
+
+/* ─── Shared label row base ─── */
+.coin-label-row {
+  width: 5cm;
+  height: 1cm;
+  position: relative;
+  background: #ffffff;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  border-left: none;
+  border-right: none;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10px;
+}
+
+.coin-label-row.empty-row {
+  opacity: 0.3;
+  background: #fafafa;
+}
+
+/* The white column in the middle — owns the stripes */
+.coin-white-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ─── Orange stripe top — only on white col ─── */
+.coin-stripe-top {
+  height: 4px;
+  background: linear-gradient(90deg, #d4710a 0%, #f39c12 50%, #e67e22 100%);
+  flex-shrink: 0;
+  box-shadow: 0 2px 5px rgba(200, 100, 0, 0.5);
+  position: relative;
+  z-index: 2;
+}
+
+/* ─── Green stripe bottom — only on white col ─── */
+.coin-stripe-bottom {
+  height: 4px;
+  background: linear-gradient(90deg, #1e8c3e 0%, #2ecc71 50%, #27ae60 100%);
+  flex-shrink: 0;
+  margin-top: auto;
+  box-shadow: 0 -2px 5px rgba(0, 130, 50, 0.45);
+  position: relative;
+  z-index: 2;
+}
+
+/* Middle content area — lives inside .coin-white-col */
+.coin-label-middle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════
+   TOP LABEL — Rarity + Specs
+   ═══════════════════════════════ */
+
+/* Rarity Index box — full-height grey left panel */
+.coin-top-left {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 3px;
+  border-right: 1px solid #000000;
+  background: #000000;
+  min-width: 40px;
+  margin-top: -4px;
+  transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
+}
+
+.rarity-label-title {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 900;
+  font-size: 0.39rem;
+  color: #e5e7eb;
+  letter-spacing: 0.04em;
+  text-align: center;
+  margin-bottom: 2px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  margin-top: 1px;
+}
+
+.rarity-grid-mini {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1px;
+  width: 24px;
+  height: 22px;
+}
+
+.rarity-cell-mini {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 800;
+  font-size: 0.52rem;
+  border: 0.5px solid #6b7280;
+  background: #6b7280;
+  color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Rarity active colours — only the selected cell lights up */
+.rarity-cell-mini.rarity-C {
+  background: #fef08a;
+  color: #713f12;
+  border-color: #fef08a;
+}
+.rarity-cell-mini.rarity-S {
+  background: #fb923c;
+  color: #fff;
+  border-color: #fb923c;
+}
+.rarity-cell-mini.rarity-R {
+  background: #ff4141;
+  color: #fff;
+  border-color: #ff4141;
+}
+.rarity-cell-mini.rarity-X {
+  background: #a21919;
+  color: #fff;
+  border-color: #a21919;
+}
+
+/* ─── Specs area — 2×2 grid layout ─── */
+.coin-top-right {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  align-items: center;
+  padding: 1px 4px;
+  gap: 0;
+  overflow: hidden;
+}
+
+.coin-spec-pair {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  white-space: nowrap;
+  line-height: 1.2;
+  padding: 0 2px;
+}
+
+.coin-spec-key {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  color: #000000;
+  -webkit-font-smoothing: antialiased;
+}
+
+.coin-spec-val {
+  font-family: "Barlow", sans-serif;
+  font-weight: 550;
+  font-size: 0.6rem;
+  color: #3d4147;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══════════════════════════════
+   BOTTOM LABEL — Name + Year/Mint
+   ═══════════════════════════════ */
+
+/* Name + denomination area */
+.coin-bottom-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  overflow: hidden;
+}
+
+.coin-bottom-ruler {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 700;
+  font-size: 0.52rem;
+  color: #1a2a3a;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.1;
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -webkit-font-smoothing: antialiased;
+}
+
+.coin-bottom-denomination {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 650;
+  font-size: 0.9rem;
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Year + Mint dark grey box — full-height right panel */
+.coin-bottom-right {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #000000;
+  color: #fff;
+  padding: 0 6px;
+  min-width: 32px;
+  border-left: 1px solid #000000;
+  transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
+}
+
+.coin-year-text {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 800;
+  font-size: 0.76rem;
+  color: #ffffff;
+  line-height: 1.2;
+  text-align: center;
+  letter-spacing: 0.02em;
+  -webkit-font-smoothing: antialiased;
+}
+
+.coin-mint-text {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  color: #ffffff;
+  line-height: 1.1;
+  text-align: center;
+  letter-spacing: 0.04em;
+  -webkit-font-smoothing: antialiased;
+  text-transform: uppercase;
+}
+
+/* ─── Page Footer ─── */
+.coin-page-footer {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  margin-top: 8px;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1100px) {
+  .coin-label-form {
+    grid-template-columns: 1fr;
+  }
+  .rarity-selector,
+  .coin-form-actions {
+    grid-column: span 1;
+  }
+}
+
+/* ─── Print ─── */
+@media print {
+  .coin-form-panel,
+  .coin-label-actions,
+  .coin-label-list,
+  .coin-builder-footer,
+  .coin-pdf-name-field {
+    display: none !important;
+  }
+
+  .coin-page-wrapper {
+    background: #fff;
+    padding: 0;
+  }
+
+  .coin-preview-panel {
+    background: transparent;
+  }
+
+  .coin-a4-page {
+    box-shadow: none;
+    border: none;
+    margin: 0;
+    page-break-after: always;
+  }
+}

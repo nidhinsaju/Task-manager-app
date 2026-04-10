@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="#f2f5f9" stroke="#1976d2" stroke-width="2"/>
+  
+  <!-- Coin 1 (left) -->
+  <circle cx="60" cy="80" r="35" fill="#FFD700" stroke="#DAA520" stroke-width="2"/>
+  <circle cx="60" cy="80" r="32" fill="#Ffd700" stroke="#B8860B" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="60" y="95" font-size="16" font-weight="bold" text-anchor="middle" fill="#333">$</text>
+  
+  <!-- Coin 2 (right) -->
+  <circle cx="140" cy="80" r="35" fill="#C0C0C0" stroke="#808080" stroke-width="2"/>
+  <circle cx="140" cy="80" r="32" fill="#E8E8E8" stroke="#696969" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="140" y="95" font-size="16" font-weight="bold" text-anchor="middle" fill="#333">€</text>
+  
+  <!-- Label below coins -->
+  <rect x="40" y="130" width="120" height="35" fill="white" stroke="#1976d2" stroke-width="2" rx="6"/>
+  <rect x="42" y="132" width="116" height="31" fill="#f0f6ff" stroke="#1976d2" stroke-width="1" stroke-dasharray="2,2" rx="4"/>
+  
+  <!-- Label text -->
+  <text x="100" y="156" font-size="12" font-weight="bold" text-anchor="middle" fill="#1976d2">COIN LABELS</text>
+</svg>

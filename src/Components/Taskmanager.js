@@ -3,7 +3,7 @@ import "./Taskmanager.css";
 import { IoMdDoneAll } from "react-icons/io";
 import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
-//import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Taskmanager() {
   const [todo, setTodo] = useState("");
@@ -36,7 +36,7 @@ function Taskmanager() {
   const addTodo = () => {
     if (editId) {
       const updatedTodos = todos.map((to) =>
-        to.id === editId ? { ...to, list: todo } : to
+        to.id === editId ? { ...to, list: todo } : to,
       );
       setTodos(updatedTodos);
       setEditID(null);
@@ -63,8 +63,8 @@ function Taskmanager() {
               ...to,
               status: to.status === "Complete" ? "In Progress" : "Complete",
             }
-          : to
-      )
+          : to,
+      ),
     );
   };
 
@@ -145,6 +145,20 @@ function Taskmanager() {
               </li>
             ))}
           </ul>
+        </div>
+        <div className="new-page-link">
+          <Link to={`${process.env.PUBLIC_URL || ""}/`}>
+            <button type="button">Home</button>
+          </Link>
+          {/*  <Link to={`${process.env.PUBLIC_URL || ""}/A4-page`}>
+            <button type="button">Country Label Generator</button>
+          </Link>
+           <Link to={`${process.env.PUBLIC_URL || ""}/Indian-Coin-Labels`}>
+            <button type="button">Indian Label Generator</button>
+          </Link>
+            <Link to={`${process.env.PUBLIC_URL || ""}/AKAM-Coin-Labels`}>
+            <button type="button">AKAM Label Generator</button>
+          </Link> */}
         </div>
       </div>
     </div>
