@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════
-   akamcoina4.css
+   AkamCoinsA4.css
    AKAM Coin Collection Label Generator
    ═══════════════════════════════════════════ */
 
@@ -336,12 +336,40 @@
 .akam-cancel-btn:hover {
   background: #f8fafc;
 }
+
+/* ─── PDF Button ─── */
 .akam-pdf-btn {
   background: #16a34a;
   color: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
-.akam-pdf-btn:hover {
+.akam-pdf-btn:hover:not(:disabled) {
   background: #15803d;
+}
+.akam-pdf-btn--generating {
+  background: #15803d;
+  cursor: not-allowed;
+  opacity: 0.88;
+}
+
+/* Spinner inside the PDF button */
+.akam-pdf-spinner {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border: 2.5px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: akam-spin 0.75s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes akam-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ─── Builder Footer ─── */
@@ -417,7 +445,6 @@
 .akam-item-duplicate-btn:hover {
   background: #6d28d9;
 }
-
 .akam-item-edit-btn {
   background: #3b82f6;
   color: #fff;
@@ -459,6 +486,130 @@
 }
 .akam-back-link:hover {
   background: #1d4ed8;
+}
+
+/* ═══════════════════════════════════════════
+   SESSION SAVE / LOAD BAR
+   ═══════════════════════════════════════════ */
+
+.akam-session-bar {
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 18px;
+  background: #f0fdf4;
+  border: 1.5px solid #bbf7d0;
+  border-radius: 14px;
+}
+
+.akam-session-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: #166534;
+  font-weight: 600;
+}
+
+.akam-session-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 2px #bbf7d0;
+  flex-shrink: 0;
+}
+
+.akam-session-btns {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.akam-session-save-btn,
+.akam-session-load-btn,
+.akam-session-close-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  font-family: "Barlow", sans-serif;
+  white-space: nowrap;
+}
+
+.akam-session-save-btn {
+  background: #0f766e;
+  color: #fff;
+  border: none;
+}
+.akam-session-save-btn:hover {
+  background: #0d6460;
+}
+
+.akam-session-load-btn {
+  position: relative;
+  background: #fff;
+  color: #0f766e;
+  border: 1.5px solid #0f766e;
+}
+.akam-session-load-btn:hover {
+  background: #f0fdf4;
+}
+.akam-session-load-btn input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+/* ─── NEW: Close Session Button ─── */
+.akam-session-close-btn {
+  background: #fff;
+  color: #dc2626;
+  border: 1.5px solid #dc2626;
+}
+.akam-session-close-btn:hover {
+  background: #fef2f2;
+  border-color: #b91c1c;
+  color: #b91c1c;
+}
+
+.akam-session-msg {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #16a34a;
+  padding: 6px 12px;
+  background: #dcfce7;
+  border-radius: 8px;
+  animation: akam-fadein 0.2s ease;
+}
+
+.akam-session-msg--warning {
+  color: #b45309;
+  background: #fef3c7;
+}
+
+@keyframes akam-fadein {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ═══════════════════════════════════════════
@@ -644,27 +795,43 @@
   border-color: #a21919;
 }
 
-/* ─── Specs area — 2×2 grid ─── */
+/* ─── Specs area — 2 explicit rows ─── */
 .akam-top-right {
   flex: 1;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  align-items: center;
-  padding: 1px 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 2px;
   gap: 0;
-  overflow: hidden;
-  /* Thin black cut line on the right side */
-  /*  border-right: 1px solid #000000; */
+  /* FIX: prevent the spec area from being clipped — allow visible overflow for text */
+  overflow: visible;
+  min-width: 0;
+}
+
+/* Each spec row: two pairs side by side, perfectly center-aligned */
+.akam-spec-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+  flex: 1;
+  min-height: 0;
+  /* FIX: allow text to be visible */
+  overflow: visible;
 }
 
 .akam-spec-pair {
   display: flex;
-  align-items: baseline;
+  flex-direction: row;
+  align-items: center;
   gap: 2px;
-  white-space: nowrap;
-  line-height: 1.2;
+  flex: 1;
+  /* FIX: use visible overflow so trailing characters like 'g' are not cut */
+  overflow: visible;
   padding: 0 2px;
+  line-height: 1;
+  /* FIX: allow natural width so text doesn't get clipped at the right edge */
+  min-width: 0;
 }
 
 .akam-spec-key {
@@ -672,6 +839,8 @@
   font-weight: 700;
   font-size: 0.7rem;
   color: #000000;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 .akam-spec-val {
@@ -679,13 +848,18 @@
   font-weight: 770;
   font-size: 0.58rem;
   color: #000000;
+  line-height: 1;
+  /* FIX: do not clip or truncate — let the value show fully */
+  overflow: visible;
+  white-space: nowrap;
+  /* FIX: small right padding to ensure descenders/tails of chars like 'g' show */
+  padding-right: 3px;
 }
 
 /* ═══════════════════════════════════════════
    BOTTOM LABEL — Logo image (left) + Denomination/Year/Mint
    ═══════════════════════════════════════════ */
 
-/* ─── Logo Image Box — html2canvas-safe real DOM border ─── */
 .akam-logo-img-box {
   flex-shrink: 0;
   display: flex;
@@ -697,9 +871,7 @@
   box-sizing: border-box;
   align-self: stretch;
   position: relative;
-  /* Space for the 3px DOM border strips on all sides */
   padding: 3px;
-  /* margin-right: 1px; */
 }
 
 .akam-logo-img-box.akam-logo-placeholder {
@@ -723,33 +895,28 @@
   margin-left: -2px;
 }
 
-/* ── Top border strip — full saffron ── */
 .akam-logo-border-top {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
   background: #ff9933;
   z-index: 5;
   height: 1px;
   width: 42px;
 }
 
-/* ── Bottom border strip — full green ── */
 .akam-logo-border-bottom {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 3px;
   background: #138808;
   z-index: 5;
   height: 1px;
   width: 42px;
 }
 
-/* ── Left side border: saffron top half → blended shadow → green bottom half ── */
 .akam-logo-border-left {
   position: absolute;
   top: 0;
@@ -761,7 +928,6 @@
   flex-direction: column;
 }
 
-/* ── Right side border: saffron top half → blended shadow → green bottom half ── */
 .akam-logo-border-right {
   position: absolute;
   top: 0;
@@ -773,18 +939,11 @@
   flex-direction: column;
 }
 
-/* Top half of left/right side strips = saffron */
 .akam-logo-border-side-top {
   flex: 1;
   background: #ff9933;
   width: 1px;
 }
-
-/*
-  Blended shadow zone where saffron meets green —
-  a gradient from warm saffron-brown → near-black → deep green
-  mimics the physical ink-bleed / shadow seen in image 2
-*/
 .akam-logo-border-side-shadow {
   height: 5px;
   background: linear-gradient(
@@ -796,15 +955,12 @@
   );
   width: 1px;
 }
-
-/* Bottom half of left/right side strips = green */
 .akam-logo-border-side-bottom {
   flex: 1;
   background: #138808;
   width: 1px;
 }
 
-/* Name + denomination area */
 .akam-bottom-left {
   flex: 1;
   display: flex;
@@ -846,7 +1002,6 @@
   text-overflow: ellipsis;
 }
 
-/* Year + Mint dark box — full-height right panel */
 .akam-bottom-right {
   flex-shrink: 0;
   display: flex;

@@ -1,8 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import "./AkamCoinsA4.css";
+
+/* ─── localStorage key ─── */
+const LS_KEY = "akam_coin_session_v1";
 
 /* ─── Rarity colour mapping ─── */
 const RARITY_CONFIG = {
@@ -12,7 +15,6 @@ const RARITY_CONFIG = {
   X: { label: "X — Extra Rare", activeClass: "active-X" },
 };
 
-/* Helper: derive per-cell rarity class for the mini grid */
 function rarityCellClass(cellKey, selectedRarity) {
   if (selectedRarity === cellKey) return `rarity-${cellKey}`;
   return "";
@@ -26,7 +28,6 @@ function AKAMTopLabelRow({ coin }) {
   const { metal, shape, diameter, weight, rarity } = coin;
   return (
     <div className="akam-label-row">
-      {/* Black rarity box — full height, left side. CSS provides the thin black cut line via border-right */}
       <div className="akam-top-left">
         <div className="akam-rarity-label-title">RARITY INDEX</div>
         <div className="akam-rarity-grid-mini">
@@ -40,26 +41,36 @@ function AKAMTopLabelRow({ coin }) {
           ))}
         </div>
       </div>
-      {/* White col: orange stripe → specs → green stripe */}
       <div className="akam-white-col">
         <div className="akam-stripe-top" />
         <div className="akam-label-middle">
+          {/* Two explicit rows: row1 = Shape+Weight, row2 = Metal+Dia */}
           <div className="akam-top-right">
-            <div className="akam-spec-pair">
-              <span className="akam-spec-key">Shape:</span>
-              <span className="akam-spec-val">{shape || "—"}</span>
+            <div className="akam-spec-row">
+              <div className="akam-spec-pair">
+                <span className="akam-spec-key">Shape:</span>
+                <span className="akam-spec-val">{shape || "—"}</span>
+              </div>
+              <div className="akam-spec-pair">
+                <span className="akam-spec-key">Weight:</span>
+                {/* FIX: wrap value in a span with explicit overflow visible so 'g' tail shows */}
+                <span
+                  className="akam-spec-val"
+                  style={{ overflow: "visible", paddingRight: "4px" }}
+                >
+                  {weight || "—"}
+                </span>
+              </div>
             </div>
-            <div className="akam-spec-pair">
-              <span className="akam-spec-key">Weight:</span>
-              <span className="akam-spec-val">{weight || "—"}</span>
-            </div>
-            <div className="akam-spec-pair">
-              <span className="akam-spec-key">Metal:</span>
-              <span className="akam-spec-val">{metal || "—"}</span>
-            </div>
-            <div className="akam-spec-pair">
-              <span className="akam-spec-key">Dia:</span>
-              <span className="akam-spec-val">{diameter || "—"}</span>
+            <div className="akam-spec-row">
+              <div className="akam-spec-pair">
+                <span className="akam-spec-key">Metal:</span>
+                <span className="akam-spec-val">{metal || "—"}</span>
+              </div>
+              <div className="akam-spec-pair">
+                <span className="akam-spec-key">Dia:</span>
+                <span className="akam-spec-val">{diameter || "—"}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -70,32 +81,18 @@ function AKAMTopLabelRow({ coin }) {
 }
 
 /* ════════════════════════════════════════════
-   BOTTOM LABEL — Logo image (left) + Denomination/Year/Mint
+   BOTTOM LABEL
    ════════════════════════════════════════════ */
-
-/*
-  Real DOM split border with blended shadow at the saffron/green junction.
-  html2canvas renders plain divs perfectly — no CSS gradient tricks are lost.
-  The .akam-logo-border-side-shadow in CSS uses a warm-brown → near-black → deep-green
-  gradient to mimic the ink-bleed / colour-mix shadow seen on physical labels.
-*/
 function LogoBorder() {
   return (
     <>
-      {/* Top edge — full saffron */}
       <div className="akam-logo-border-top" />
-
-      {/* Bottom edge — full green */}
       <div className="akam-logo-border-bottom" />
-
-      {/* Left edge — top half saffron / blended shadow / bottom half green */}
       <div className="akam-logo-border-left">
         <div className="akam-logo-border-side-top" />
         <div className="akam-logo-border-side-shadow" />
         <div className="akam-logo-border-side-bottom" />
       </div>
-
-      {/* Right edge — top half saffron / blended shadow / bottom half green */}
       <div className="akam-logo-border-right">
         <div className="akam-logo-border-side-top" />
         <div className="akam-logo-border-side-shadow" />
@@ -110,15 +107,12 @@ function AKAMBottomLabelRow({ coin, logoDataUrl }) {
   const { denomination, year, mint } = coin;
   return (
     <div className="akam-label-row">
-      {/* Logo box with real DOM saffron/green split border + blended shadow */}
       <div
         className={`akam-logo-img-box${logoDataUrl ? "" : " akam-logo-placeholder"}`}
       >
         <LogoBorder />
         {logoDataUrl && <img src={logoDataUrl} alt="AKAM Logo" />}
       </div>
-
-      {/* White col: orange stripe → denomination + subtitle → green stripe */}
       <div className="akam-white-col">
         <div className="akam-stripe-top" />
         <div className="akam-label-middle">
@@ -131,8 +125,6 @@ function AKAMBottomLabelRow({ coin, logoDataUrl }) {
         </div>
         <div className="akam-stripe-bottom" />
       </div>
-
-      {/* Black year/mint box — full height, right side */}
       <div className="akam-bottom-right">
         {year && <div className="akam-year-text">{year}</div>}
         {mint && <div className="akam-mint-text">{mint}</div>}
@@ -147,12 +139,10 @@ function AKAMBottomLabelRow({ coin, logoDataUrl }) {
 function AKAMCoinA4Page() {
   const contentRef = useRef(null);
   const fileInputRef = useRef(null);
+  const sessionInputRef = useRef(null);
 
-  /* ─── Logo state ─── */
   const [logoDataUrl, setLogoDataUrl] = useState(null);
   const [logoFileName, setLogoFileName] = useState("");
-
-  /* ─── Form state ─── */
   const [denomination, setDenomination] = useState("");
   const [year, setYear] = useState("");
   const [mint, setMint] = useState("");
@@ -161,26 +151,136 @@ function AKAMCoinA4Page() {
   const [diameter, setDiameter] = useState("");
   const [weight, setWeight] = useState("");
   const [rarity, setRarity] = useState("");
-
-  /* ─── App state ─── */
   const [coins, setCoins] = useState([]);
   const [pageCount, setPageCount] = useState(1);
   const [pdfName, setPdfName] = useState("akam-coins");
   const [editingId, setEditingId] = useState(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [saveMsg, setSaveMsg] = useState("");
+  const [saveMsgType, setSaveMsgType] = useState("success"); // "success" | "warning"
 
+  /* ── localStorage restore ── */
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      if (!raw) return;
+      const s = JSON.parse(raw);
+      if (s.coins) setCoins(s.coins);
+      if (s.pageCount) setPageCount(s.pageCount);
+      if (s.pdfName) setPdfName(s.pdfName);
+      if (s.logoDataUrl) setLogoDataUrl(s.logoDataUrl);
+      if (s.logoFileName) setLogoFileName(s.logoFileName);
+    } catch (e) {
+      console.warn("Restore failed:", e);
+    }
+  }, []);
+
+  /* ── localStorage auto-save ── */
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        LS_KEY,
+        JSON.stringify({
+          coins,
+          pageCount,
+          pdfName,
+          logoDataUrl,
+          logoFileName,
+        }),
+      );
+    } catch (e) {
+      console.warn("Save failed:", e);
+    }
+  }, [coins, pageCount, pdfName, logoDataUrl, logoFileName]);
+
+  /* ── Session export ── */
+  const handleSaveSession = () => {
+    const blob = new Blob(
+      [
+        JSON.stringify(
+          { coins, pageCount, pdfName, logoDataUrl, logoFileName },
+          null,
+          2,
+        ),
+      ],
+      { type: "application/json" },
+    );
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${pdfName.trim() || "akam-coins"}-session.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showMsg("Session saved!", "success");
+  };
+
+  /* ── Session import ── */
+  const handleLoadSession = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const s = JSON.parse(ev.target.result);
+        if (s.coins) setCoins(s.coins);
+        if (s.pageCount) setPageCount(s.pageCount);
+        if (s.pdfName) setPdfName(s.pdfName);
+        if (s.logoDataUrl) setLogoDataUrl(s.logoDataUrl);
+        if (s.logoFileName) setLogoFileName(s.logoFileName);
+        showMsg("Session loaded!", "success");
+      } catch {
+        showMsg("Invalid session file.", "warning");
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
+
+  /* ── NEW: Close / Clear Session ── */
+  const handleCloseSession = () => {
+    if (
+      coins.length > 0 &&
+      !window.confirm(
+        "This will clear all coins and reset the session. Are you sure?",
+      )
+    ) {
+      return;
+    }
+    // Reset all state to defaults
+    setCoins([]);
+    setPageCount(1);
+    setPdfName("akam-coins");
+    setLogoDataUrl(null);
+    setLogoFileName("");
+    resetForm();
+    // Clear localStorage
+    try {
+      localStorage.removeItem(LS_KEY);
+    } catch (e) {
+      console.warn("Clear failed:", e);
+    }
+    showMsg("Session cleared.", "warning");
+  };
+
+  const showMsg = (msg, type = "success") => {
+    setSaveMsg(msg);
+    setSaveMsgType(type);
+    setTimeout(() => setSaveMsg(""), 2500);
+  };
+
+  /* ── Pagination ── */
   const coinsPerPage = 40;
   const autoPages = Math.max(1, Math.ceil(coins.length / coinsPerPage));
   const totalPages = Math.max(autoPages, pageCount);
   const pages = Array.from({ length: totalPages }, (_, pi) =>
     coins.slice(pi * coinsPerPage, (pi + 1) * coinsPerPage),
   );
-
   const getPageSlots = (pageCoins) => {
     const empty = coinsPerPage - pageCoins.length;
     return [...pageCoins, ...Array.from({ length: empty }, () => null)];
   };
 
-  /* ─── Logo upload handler ─── */
+  /* ── Logo ── */
   const handleLogoUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -189,14 +289,13 @@ function AKAMCoinA4Page() {
     reader.onload = (ev) => setLogoDataUrl(ev.target.result);
     reader.readAsDataURL(file);
   };
-
   const handleLogoClear = () => {
     setLogoDataUrl(null);
     setLogoFileName("");
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  /* ─── Form helpers ─── */
+  /* ── Form ── */
   const resetForm = () => {
     setDenomination("");
     setYear("");
@@ -208,7 +307,6 @@ function AKAMCoinA4Page() {
     setRarity("");
     setEditingId(null);
   };
-
   const buildCoin = (id) => ({
     id,
     denomination: denomination.trim(),
@@ -220,13 +318,11 @@ function AKAMCoinA4Page() {
     weight: weight.trim(),
     rarity,
   });
-
   const handleAddCoin = (e) => {
     e.preventDefault();
     setCoins((prev) => [...prev, buildCoin(Date.now())]);
     resetForm();
   };
-
   const handleUpdateCoin = (e) => {
     e.preventDefault();
     setCoins((prev) =>
@@ -234,7 +330,6 @@ function AKAMCoinA4Page() {
     );
     resetForm();
   };
-
   const handleEditCoin = (id) => {
     const c = coins.find((x) => x.id === id);
     if (!c) return;
@@ -248,55 +343,51 @@ function AKAMCoinA4Page() {
     setRarity(c.rarity);
     setEditingId(id);
   };
-
-  /* ─── Duplicate: insert a copy right after the original ─── */
   const handleDuplicateCoin = (id) => {
     setCoins((prev) => {
       const idx = prev.findIndex((c) => c.id === id);
       if (idx === -1) return prev;
-      const original = prev[idx];
-      const duplicate = { ...original, id: Date.now() };
+      const duplicate = { ...prev[idx], id: Date.now() };
       const next = [...prev];
       next.splice(idx + 1, 0, duplicate);
       return next;
     });
   };
-
   const handleRemoveCoin = (id) =>
     setCoins((prev) => prev.filter((c) => c.id !== id));
-
   const handleAddPage = () => setPageCount((n) => n + 1);
   const handleRemovePage = () => {
     if (pageCount > autoPages) setPageCount((n) => n - 1);
   };
 
-  /* ─── PDF Generation ─── */
+  /* ── PDF ── */
   const handleMakePdf = async () => {
-    if (!contentRef.current) return;
+    if (!contentRef.current || isGenerating) return;
     const pageEls = Array.from(
       contentRef.current.querySelectorAll(".akam-a4-page"),
     );
     if (!pageEls.length) return;
-
-    const pdf = new jsPDF("portrait", "mm", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-
-    for (let i = 0; i < pageEls.length; i++) {
-      const canvas = await html2canvas(pageEls[i], {
-        scale: 5,
-        useCORS: true,
-        backgroundColor: "#ffffff",
-      });
-      const imgData = canvas.toDataURL("image/png");
-      const imgH = (canvas.height * pdfWidth) / canvas.width;
-      if (i > 0) pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, imgH);
+    setIsGenerating(true);
+    try {
+      const pdf = new jsPDF("portrait", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      for (let i = 0; i < pageEls.length; i++) {
+        const canvas = await html2canvas(pageEls[i], {
+          scale: 5,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+        });
+        const imgData = canvas.toDataURL("image/png");
+        const imgH = (canvas.height * pdfWidth) / canvas.width;
+        if (i > 0) pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, imgH);
+      }
+      pdf.save(`${pdfName.trim() || "akam-coins"}.pdf`);
+    } finally {
+      setIsGenerating(false);
     }
-
-    pdf.save(`${pdfName.trim() || "akam-coins"}.pdf`);
   };
 
-  /* ─── Rarity badge style for coin list ─── */
   const rarityBadgeStyle = (r) => {
     const map = {
       C: { background: "#94e70f", color: "#fff" },
@@ -307,7 +398,6 @@ function AKAMCoinA4Page() {
     return map[r] || { background: "#e2e8f0", color: "#475569" };
   };
 
-  /* ─── Render ─── */
   return (
     <div className="akam-page-wrapper">
       {/* ══ FORM PANEL ══ */}
@@ -331,7 +421,6 @@ function AKAMCoinA4Page() {
           className="akam-label-form"
           onSubmit={editingId ? handleUpdateCoin : handleAddCoin}
         >
-          {/* ── AKAM Logo Upload ── */}
           <div className="akam-logo-upload-field">
             <label>AKAM Logo Image</label>
             <div className="akam-logo-upload-inner">
@@ -364,7 +453,6 @@ function AKAMCoinA4Page() {
             </div>
           </div>
 
-          {/* ── Coin fields ── */}
           <div className="akam-form-field">
             <label>Denomination</label>
             <input
@@ -392,7 +480,6 @@ function AKAMCoinA4Page() {
               placeholder="e.g., BOM / CAL / HYD"
             />
           </div>
-
           <div className="akam-form-field">
             <label>Shape</label>
             <input
@@ -430,7 +517,6 @@ function AKAMCoinA4Page() {
             />
           </div>
 
-          {/* Rarity Selector */}
           <div className="akam-rarity-selector">
             <label>Rarity Index</label>
             <div className="akam-rarity-buttons">
@@ -447,7 +533,6 @@ function AKAMCoinA4Page() {
             </div>
           </div>
 
-          {/* Actions */}
           <div className="akam-form-actions">
             <button type="submit" className="akam-add-btn">
               {editingId ? "Update Coin" : "Add Coin"}
@@ -488,7 +573,6 @@ function AKAMCoinA4Page() {
           <div>Each coin = 2 stacked labels (top + bottom)</div>
         </div>
 
-        {/* ── Coin List ── */}
         {coins.length > 0 && (
           <div className="akam-label-list">
             {coins.map((c) => (
@@ -515,7 +599,6 @@ function AKAMCoinA4Page() {
                   type="button"
                   className="akam-item-btn akam-item-duplicate-btn"
                   onClick={() => handleDuplicateCoin(c.id)}
-                  title="Duplicate this coin label"
                 >
                   Duplicate
                 </button>
@@ -538,7 +621,6 @@ function AKAMCoinA4Page() {
           </div>
         )}
 
-        {/* PDF Name */}
         <div className="akam-form-field akam-pdf-name-field">
           <label>PDF File Name</label>
           <input
@@ -549,13 +631,71 @@ function AKAMCoinA4Page() {
           />
         </div>
 
+        {/* ══ SESSION BAR ══ */}
+        <div className="akam-session-bar">
+          <div className="akam-session-info">
+            <span className="akam-session-dot" title="Auto-saved" />
+            Auto-saved to browser — your data is safe on reload
+          </div>
+          <div className="akam-session-btns">
+            {/* Save Session */}
+            <button
+              type="button"
+              className="akam-session-save-btn"
+              onClick={handleSaveSession}
+            >
+              💾 Save Session
+            </button>
+
+            {/* Load Session */}
+            <label className="akam-session-load-btn">
+              📂 Load Session
+              <input
+                type="file"
+                accept=".json,application/json"
+                ref={sessionInputRef}
+                onChange={handleLoadSession}
+              />
+            </label>
+
+            {/* NEW: Close / Clear Session */}
+            <button
+              type="button"
+              className="akam-session-close-btn"
+              onClick={handleCloseSession}
+              title="Clear all coins and reset the session"
+            >
+              ✕ Close Session
+            </button>
+
+            {/* Status message */}
+            {saveMsg && (
+              <span
+                className={`akam-session-msg${
+                  saveMsgType === "warning" ? " akam-session-msg--warning" : ""
+                }`}
+              >
+                {saveMsg}
+              </span>
+            )}
+          </div>
+        </div>
+
         <div className="akam-label-actions">
           <button
             type="button"
-            className="akam-pdf-btn"
+            className={`akam-pdf-btn${isGenerating ? " akam-pdf-btn--generating" : ""}`}
             onClick={handleMakePdf}
+            disabled={isGenerating}
           >
-            Generate PDF
+            {isGenerating ? (
+              <>
+                <span className="akam-pdf-spinner" />
+                Generating…
+              </>
+            ) : (
+              "Generate PDF"
+            )}
           </button>
           <Link
             to={`${process.env.PUBLIC_URL || ""}/Coin-Label-Generator`}
@@ -574,20 +714,16 @@ function AKAMCoinA4Page() {
               <div>Page {pageIndex + 1}</div>
               <div>{pageCoins.length} coins</div>
             </div>
-
             <div className="akam-page-inner">
               <div className="akam-page-grid">
                 {getPageSlots(pageCoins).map((coin, slotIndex) => (
                   <div className="akam-slot" key={`${pageIndex}-${slotIndex}`}>
-                    {/* Bottom label first (denomination row) */}
                     <AKAMBottomLabelRow coin={coin} logoDataUrl={logoDataUrl} />
-                    {/* Top label second (specs row) */}
                     <AKAMTopLabelRow coin={coin} />
                   </div>
                 ))}
               </div>
             </div>
-
             <div className="akam-page-footer">
               AKAM Coin Collection · Page {pageIndex + 1} of {totalPages}
             </div>
